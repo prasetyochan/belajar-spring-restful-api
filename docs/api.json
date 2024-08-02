@@ -1,0 +1,2132 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Mini Project RESTful API",
+    "version": "1",
+    "description": "OpenAPI for Mini Project RESTful API",
+    "termsOfService": "https://www.programmerzamannow.com",
+    "contact": {
+      "name": "Chandra Prasetyo",
+      "email": "keymiel01@gmail.com",
+      "url": "https://www.programmerzamannow.com"
+    },
+    "license": {
+      "name": "APACHE 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "servers": [
+    {
+      "description": "Mini Project RESTful API Server",
+      "url": "https://{environment}.programmerzamannow.com/api/v1",
+      "variables": {
+        "environment": {
+          "description": "Server Environment",
+          "default": "dev",
+          "enum": ["dev", "qa", "prod"]
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Everything about Authentication process"
+    },
+    {
+      "name": "User",
+      "description": "Operations about User"
+    },
+    {
+      "name": "Contact",
+      "description": "Operations about Contacts"
+    },
+    {
+      "name": "Address",
+      "description": "Everything about your Contact's Address"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Register a new user",
+        "security": [],
+        "tags": ["User"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "nullable": false,
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "password": {
+                    "type": "string",
+                    "nullable": false,
+                    "minLength": 10,
+                    "maxLength": 100
+                  },
+                  "name": {
+                    "type": "string",
+                    "nullable": false,
+                    "minLength": 3,
+                    "maxLength": 100
+                  }
+                },
+                "required": ["username", "password", "name"]
+              },
+              "examples": {
+                "Peter": {
+                  "description": "User Peter",
+                  "value": {
+                    "username": "peter",
+                    "password": "peter123",
+                    "name": "Peter Parker"
+                  }
+                },
+                "Joey": {
+                  "description": "User Joey",
+                  "value": {
+                    "username": "joey",
+                    "password": "jo123",
+                    "name": "Joey Alexander"
+                  }
+                },
+                "Sam": {
+                  "description": "User Sam",
+                  "value": {
+                    "username": "sam",
+                    "password": "123456",
+                    "name": "Sam Wilson"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Register User",
+        "responses": {
+          "200": {
+            "description": "Users response OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Registration completed successfully",
+                    "value": {
+                      "data": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Users response BAD_REQUEST",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "password": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "name": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "username": {
+                    "description": "Username Invalid",
+                    "value": {
+                      "errors": {
+                        "username": [
+                          "must not be null",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  },
+                  "password": {
+                    "description": "Password Invalid",
+                    "value": {
+                      "errors": {
+                        "password": [
+                          "must not be null",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  },
+                  "name": {
+                    "description": "Name Invalid",
+                    "value": {
+                      "errors": {
+                        "name": [
+                          "must not be null",
+                          "must greater than or equal to 3",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  },
+                  "allData": {
+                    "description": "Data Invalid",
+                    "value": {
+                      "errors": {
+                        "username": [
+                          "must not be null",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ],
+                        "password": [
+                          "must not be null",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ],
+                        "name": [
+                          "must not be null",
+                          "must greater than or equal to 3",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "summary": "Access to user's profile",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "User Profile",
+        "responses": {
+          "200": {
+            "description": "Users response OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Example User Peter",
+                    "value": {
+                      "data": {
+                        "username": "peter",
+                        "name": "Parker Peter"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Users response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string",
+                      "properties": {}
+                    }
+                  }
+                },
+                "examples": {
+                  "unauthorized": {
+                    "description": "Unauthorized User",
+                    "value": {
+                      "errors": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user's profile",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "tags": ["User"],
+        "description": "User Profile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name", "password"]
+              },
+              "examples": {
+                "name": {
+                  "description": "Update user name",
+                  "value": {
+                    "name": "Parker Peter"
+                  }
+                },
+                "password": {
+                  "description": "Update user password",
+                  "value": {
+                    "password": "newpeter123"
+                  }
+                },
+                "name&&password": {
+                  "description": "Update user name and password",
+                  "value": {
+                    "name": "Parker Peter",
+                    "password": "newpeter123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Users response OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Example User Peter",
+                    "value": {
+                      "data": {
+                        "username": "peter",
+                        "name": "Parker Peter"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Field cannot be blank",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "password": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "name": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "name": {
+                    "description": "List errors of name",
+                    "value": {
+                      "errors": {
+                        "name": [
+                          "must not be blank",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  },
+                  "password": {
+                    "description": "List errors of password",
+                    "value": {
+                      "errors": {
+                        "password": [
+                          "must not be blank",
+                          "must greater than or equal to 3",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  },
+                  "user&&password": {
+                    "description": "List errros of name and password",
+                    "value": {
+                      "errors": {
+                        "name": [
+                          "must not be blank",
+                          "must greater than or equal to 1",
+                          "must be less then or equal to 100"
+                        ],
+                        "password": [
+                          "must not be blank",
+                          "must greater than or equal to 3",
+                          "must be less then or equal to 100"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Users response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string",
+                      "properties": {}
+                    }
+                  }
+                },
+                "examples": {
+                  "unauthorized": {
+                    "description": "Unauthorized User",
+                    "value": {
+                      "errors": "Unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login user into the system",
+        "security": [],
+        "description": "Login User using username and password and Return the token",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "nullable": false,
+                    "type": "string"
+                  },
+                  "password": {
+                    "nullable": false,
+                    "type": "string"
+                  }
+                },
+                "required": ["username", "password"]
+              },
+              "example": {
+                "username": "peter",
+                "password": "peter123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Auth response OK, Return data token and expired date",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "type": "string"
+                        },
+                        "expiredAt": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Example User Peter",
+                    "value": {
+                      "data": {
+                        "token": "TOKEN",
+                        "expiredAt": "234234234234"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Auth response BAD_REQUEST, Return error field not nullable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Username or Password can't be null"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Auth response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "errors": "Username or Password is wrong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "delete": {
+        "summary": "Logout current user from the system",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "description": "Logout User",
+        "tags": ["Auth"],
+        "responses": {
+          "200": {
+            "description": "Logout Successed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "data": "OK"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "summary": "Find contacts by ID",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "description": "Find All/Find contact using name, phone, or email",
+        "tags": ["Contact"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Filter contact by full name(firstname + lastname)",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "examples": {
+              "Sam W": {
+                "description": "Example search contact using name that contains 'Sam W'",
+                "value": "sam w"
+              },
+              "Pete": {
+                "description": "EExample search contact using name that contains keyword 'pete'",
+                "value": "pete"
+              }
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Filter contact by email",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "examples": {
+              "Gmail": {
+                "description": "Example search contact that using Gmail format",
+                "value": "@gmail.com"
+              },
+              "Sam": {
+                "description": "Example search contact using email that contains 'sam'",
+                "value": "sam"
+              }
+            }
+          },
+          {
+            "name": "phone",
+            "in": "query",
+            "required": false,
+            "description": "Filter contact by phone",
+            "schema": {
+              "type": "string",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 15
+            },
+            "examples": {
+              "0812": {
+                "description": "Example search contact using phone that contains 0812",
+                "value": "0812"
+              },
+              "08121111111": {
+                "description": "Example search contact using phone that contains 08121111111'",
+                "value": "08121111111"
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "number of Page",
+            "schema": {
+              "type": "number",
+              "format": "int32",
+              "nullable": true,
+              "minLength": 1,
+              "maxLength": 10,
+              "default": 0
+            },
+            "examples": {
+              "0": {
+                "description": "Page 0 (Start from 0)",
+                "value": "0"
+              },
+              "1": {
+                "description": "Page 1 (Start from 0)",
+                "value": "0"
+              }
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "description": "number of Page",
+            "schema": {
+              "type": "number",
+              "format": "int32",
+              "nullable": true,
+              "default": 10
+            },
+            "examples": {
+              "10": {
+                "description": "Show 10 data size per-Page",
+                "value": "10"
+              },
+              "100": {
+                "description": "Show 10 data size per-Page",
+                "value": "100"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response OK, success find contact based on parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "firstName": {
+                            "type": "string"
+                          },
+                          "lastName": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "phone": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "paging": {
+                      "type": "object",
+                      "properties": {
+                        "currentPage": {
+                          "description": "number of current page",
+                          "type": "number",
+                          "format": "int32"
+                        },
+                        "totalPages": {
+                          "description": "number of total pages",
+                          "type": "number",
+                          "format": "int32"
+                        },
+                        "size": {
+                          "description": "number of data per-page",
+                          "type": "number",
+                          "format": "int32"
+                        },
+                        "totalElements": {
+                          "description": "total data found",
+                          "type": "number",
+                          "format": "int32"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "1": {
+                    "description": "1 Data",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "12345",
+                          "firstName": "Peter",
+                          "lastName": "Parker",
+                          "email": "peter@example.com",
+                          "phone": "08121111111"
+                        }
+                      ],
+                      "paging": {
+                        "currentPage": 0,
+                        "totalPages": 1,
+                        "size": 10,
+                        "totalElements": 10
+                      }
+                    }
+                  },
+                  "2": {
+                    "description": "2 Data",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "12345",
+                          "firstName": "Peter",
+                          "lastName": "Parker",
+                          "email": "peter@example.com",
+                          "phone": "08121111111"
+                        },
+                        {
+                          "id": "11111",
+                          "firstName": "Sam",
+                          "lastName": "Wilson",
+                          "email": "samwilson@example.com",
+                          "phone": "081222222222"
+                        }
+                      ],
+                      "paging": {
+                        "currentPage": 0,
+                        "totalPages": 1,
+                        "size": 10,
+                        "totalElements": 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new Contact",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "description": "Create a new contact",
+        "tags": ["Contact"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactRequestBody"
+              },
+              "examples": {
+                "FirstName": {
+                  "$ref": "#/components/examples/ContactRequestBodyName"
+                },
+                "Peter": {
+                  "$ref": "#/components/examples/ContactRequestBodyPeter"
+                },
+                "Sam": {
+                  "$ref": "#/components/examples/ContactRequestBodySam"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new contact response OK, Return contact data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                },
+                "examples": {
+                  "FirstName": {
+                    "$ref": "#/components/examples/ContactResponseName"
+                  },
+                  "Peter": {
+                    "$ref": "#/components/examples/ContactResponsePeter"
+                  },
+                  "Sam": {
+                    "$ref": "#/components/examples/ContactResponseSam"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BAD_REQUEST not using the correct Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponseErrors"
+                },
+                "examples": {
+                  "Invalid": {
+                    "$ref": "#/components/examples/ContactResponseBad"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}": {
+      "get": {
+        "summary": "Get Contact by contact id",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          }
+        ],
+        "description": "Details contact",
+        "tags": ["Contact"],
+        "responses": {
+          "200": {
+            "description": "Get contact details response OK, Return contact data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                },
+                "examples": {
+                  "Peter": {
+                    "$ref": "#/components/examples/ContactResponsePeter"
+                  },
+                  "Sam": {
+                    "$ref": "#/components/examples/ContactResponseSam"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update contact",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          }
+        ],
+        "description": "Update a contact",
+        "tags": ["Contact"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactRequestBody"
+              },
+              "examples": {
+                "Peter": {
+                  "$ref": "#/components/examples/ContactRequestBodyPeter"
+                },
+                "Sam": {
+                  "$ref": "#/components/examples/ContactRequestBodySam"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new contact response OK, Return contact data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                },
+                "examples": {
+                  "Peter": {
+                    "$ref": "#/components/examples/ContactResponsePeter"
+                  },
+                  "Sam": {
+                    "$ref": "#/components/examples/ContactResponseSam"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "BAD_REQUEST not using the correct Format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponseErrors"
+                },
+                "examples": {
+                  "Invalid": {
+                    "$ref": "#/components/examples/ContactResponseUpdateBad"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete contact",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          }
+        ],
+        "description": "Delete Contact",
+        "tags": ["Contact"],
+        "responses": {
+          "200": {
+            "description": "Delete Users response OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Succesfully update a contact",
+                    "value": {
+                      "data": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}/addresses": {
+      "get": {
+        "summary": "Get List of Addresses by contact id",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          }
+        ],
+        "description": "List Address",
+        "tags": ["Address"],
+        "responses": {
+          "200": {
+            "description": "Response OK, success find address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "street": {
+                            "type": "string",
+                            "maxLength": 200
+                          },
+                          "city": {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          "province": {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          "country": {
+                            "type": "string",
+                            "maxLength": 100
+                          },
+                          "postalCode": {
+                            "type": "string",
+                            "maxLength": 10
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "1 Address": {
+                    "description": "1 Data",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "A222",
+                          "street": "Jl. Street",
+                          "city": "City A",
+                          "province": "Provinsi A",
+                          "country": "Country A",
+                          "postalCode": "12345"
+                        }
+                      ]
+                    }
+                  },
+                  "2 Address": {
+                    "description": "2 Data",
+                    "value": {
+                      "data": [
+                        {
+                          "id": "A111",
+                          "street": null,
+                          "city": null,
+                          "province": null,
+                          "country": "Country A",
+                          "postalCode": null
+                        },
+                        {
+                          "id": "A222",
+                          "street": "Jl. Street",
+                          "city": "City A",
+                          "province": "Provinsi A",
+                          "country": "Country A",
+                          "postalCode": "12345"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add a new address",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          }
+        ],
+        "description": "Create a New Address",
+        "tags": ["Address"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressRequestBody"
+              },
+              "examples": {
+                "Mandatory": {
+                  "$ref": "#/components/examples/AddressRequestBodyMandatory"
+                },
+                "Complete": {
+                  "$ref": "#/components/examples/AddressRequestBodyComplete"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new address response OK, return address data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponse"
+                },
+                "examples": {
+                  "Mandatory": {
+                    "$ref": "#/components/examples/AddressResponseMandatory"
+                  },
+                  "Complete": {
+                    "$ref": "#/components/examples/AddressResponseComplete"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error BAD_REQUEST, invalid field format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "city": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "province": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "country": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "postalCode": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid": {
+                    "description": "Response Array of String for each field",
+                    "value": {
+                      "errors": {
+                        "street": ["must be less than or equal to 200"],
+                        "city": ["must be less than or equal to 100"],
+                        "province": ["must be less than or equal to 100"],
+                        "country": [
+                          "must not be blank",
+                          "must be less than or equal to 100"
+                        ],
+                        "postalCode": ["must be less than or equal to 100"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404, Contact is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}/addresess/{addressId}": {
+      "get": {
+        "summary": "Find address by ID",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          },
+          {
+            "$ref": "#/components/parameters/AddressId"
+          }
+        ],
+        "description": "Get Address Details",
+        "tags": ["Address"],
+        "responses": {
+          "200": {
+            "description": "Get address response OK, return address data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponse"
+                },
+                "examples": {
+                  "Address 1": {
+                    "$ref": "#/components/examples/AddressResponseMandatory"
+                  },
+                  "Address 2": {
+                    "$ref": "#/components/examples/AddressResponseComplete"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404, Address is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/AddressNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Address",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          },
+          {
+            "$ref": "#/components/parameters/AddressId"
+          }
+        ],
+        "description": "Update Address",
+        "tags": ["Address"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddressRequestBody"
+              },
+              "examples": {
+                "Mandatory": {
+                  "$ref": "#/components/examples/AddressRequestBodyMandatoryUpdate"
+                },
+                "Complete": {
+                  "$ref": "#/components/examples/AddressRequestBodyCompleteUpdate"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a new address response OK, return address data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddressResponse"
+                },
+                "examples": {
+                  "Mandatory": {
+                    "$ref": "#/components/examples/AddressResponseMandatoryUpdate"
+                  },
+                  "Complete": {
+                    "$ref": "#/components/examples/AddressResponseCompleteUpdate"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error BAD_REQUEST, invalid field format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "street": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "city": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "province": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "country": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "postalCode": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Invalid": {
+                    "description": "Response Array of String for each field",
+                    "value": {
+                      "errors": {
+                        "street": ["must be less than or equal to 200"],
+                        "city": ["must be less than or equal to 100"],
+                        "province": ["must be less than or equal to 100"],
+                        "country": [
+                          "must not be blank",
+                          "must be less than or equal to 100"
+                        ],
+                        "postalCode": ["must be less than or equal to 100"]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Response Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Error 404, Contact is not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/ContactNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete address by ID",
+        "security": [
+          {
+            "X-API-TOKEN": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ContactId"
+          },
+          {
+            "$ref": "#/components/parameters/AddressId"
+          }
+        ],
+        "description": "Delete Address",
+        "tags": ["Address"],
+        "responses": {
+          "200": {
+            "description": "Delete Address response OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "description": "Succesfully update a contact",
+                    "value": {
+                      "data": "OK"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "Unauthorized": {
+                    "$ref": "#/components/examples/Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Response Address not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedOrNotFound"
+                },
+                "examples": {
+                  "404": {
+                    "$ref": "#/components/examples/AddressNotFound"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "X-API-TOKEN": {
+        "description": "X-API-TOKEN apiKey Authentication in header for User RESTful API",
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-TOKEN"
+      }
+    },
+    "parameters": {
+      "ContactId": {
+        "name": "contactId",
+        "in": "path",
+        "required": true,
+        "description": "Path Parameter {contactId} for Update, Delete, Get details Contact and for Addresses",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "AddressId": {
+        "name": "addressId",
+        "in": "path",
+        "required": true,
+        "description": "Path Parameter {addressId} for update, delete and get details Address",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "schemas": {
+      "ContactResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ContactResponseErrors": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "object",
+            "properties": {
+              "firstName": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "lastName": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "email": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "phone": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContactRequestBody": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "nullable": false,
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "required": ["firstName"]
+      },
+      "AddressRequestBody": {
+        "type": "object",
+        "properties": {
+          "street": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "province": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "country": {
+            "type": "string",
+            "nullable": false,
+            "maxLength": 100
+          },
+          "postalCode": {
+            "type": "string",
+            "maxLength": 10
+          }
+        },
+        "required": ["country"]
+      },
+      "AddressResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "street": {
+                "type": "string",
+                "maxLength": 200
+              },
+              "city": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "province": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "country": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "postalCode": {
+                "type": "string",
+                "maxLength": 10
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedOrNotFound": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "examples": {
+      "AddressRequestBodyMandatory": {
+        "description": "Example Request Body using mandatory field only(country) with JSON",
+        "value": {
+          "country": "Country A"
+        }
+      },
+      "AddressRequestBodyMandatoryUpdate": {
+        "description": "Example Request Body of Update using mandatory field only(country) with JSON",
+        "value": {
+          "country": "Country B"
+        }
+      },
+      "AddressRequestBodyComplete": {
+        "description": "Example Request Body using all fields with JSON",
+        "value": {
+          "street": "Jl. Street",
+          "city": "City A",
+          "province": "Provinsi A",
+          "country": "Country A",
+          "postalCode": "12345"
+        }
+      },
+      "AddressRequestBodyCompleteUpdate": {
+        "description": "Example Request Body using all fields with JSON",
+        "value": {
+          "street": "Jl. Street 2",
+          "city": "City B",
+          "province": "Provinsi B",
+          "country": "Country B",
+          "postalCode": "54321"
+        }
+      },
+      "AddressResponseMandatory": {
+        "description": "Example Response using required field only with JSON",
+        "value": {
+          "data": {
+            "id": "A111",
+            "street": null,
+            "city": null,
+            "province": null,
+            "country": "Country A",
+            "postalCode": null
+          }
+        }
+      },
+      "AddressResponseMandatoryUpdate": {
+        "description": "Example Response of Update using required field only with JSON",
+        "value": {
+          "data": {
+            "id": "A111",
+            "street": null,
+            "city": null,
+            "province": null,
+            "country": "Country B",
+            "postalCode": null
+          }
+        }
+      },
+      "AddressResponseComplete": {
+        "description": "Example Response of Update using required field only with JSON",
+        "value": {
+          "data": {
+            "id": "A222",
+            "street": "Jl. Street",
+            "city": "City A",
+            "province": "Provinsi A",
+            "country": "Country A",
+            "postalCode": "12345"
+          }
+        }
+      },
+      "AddressResponseCompleteUpdate": {
+        "description": "Example Response using required field only with JSON",
+        "value": {
+          "data": {
+            "id": "A222",
+            "street": "Jl. Street 2",
+            "city": "City B",
+            "province": "Provinsi B",
+            "country": "Country B",
+            "postalCode": "54321"
+          }
+        }
+      },
+      "AddressNotFound": {
+        "description": "Address is not found",
+        "value": {
+          "errors": "Address is not found"
+        }
+      },
+      "ContactNotFound": {
+        "description": "Contact is not found",
+        "value": {
+          "errors": "Contact is not found"
+        }
+      },
+      "ContactRequestBodyName": {
+        "description": "Example Request Body using required field only name with JSON",
+        "value": {
+          "firstName": "John"
+        }
+      },
+      "ContactRequestBodyPeter": {
+        "description": "Example Request Body Peter with JSON",
+        "value": {
+          "firstName": "Peter",
+          "lastName": "Parker",
+          "email": "peter@example.com",
+          "phone": "08121111111"
+        }
+      },
+      "ContactRequestBodySam": {
+        "description": "Example Request Body Sam with JSON",
+        "value": {
+          "firstName": "Sam",
+          "lastName": "Wilson",
+          "email": "samwilson@example.com",
+          "phone": "081222222222"
+        }
+      },
+      "ContactResponseName": {
+        "description": "Example Response using required field only with JSON",
+        "value": {
+          "data": {
+            "id": "1111222",
+            "firstName": "John",
+            "lastName": null,
+            "email": null,
+            "phone": null
+          }
+        }
+      },
+      "ContactResponsePeter": {
+        "description": "Example Response Peter with JSON",
+        "value": {
+          "data": {
+            "id": "12345",
+            "firstName": "Peter",
+            "lastName": "Parker",
+            "email": "peter@example.com",
+            "phone": "08121111111"
+          }
+        }
+      },
+      "ContactResponseSam": {
+        "description": "Example Response Peter with JSON",
+        "value": {
+          "data": {
+            "id": "11111",
+            "firstName": "Sam",
+            "lastName": "Wilson",
+            "email": "samwilson@example.com",
+            "phone": "081222222222"
+          }
+        }
+      },
+      "ContactResponseBad": {
+        "description": "Example BAD_REQUEST response with JSON",
+        "value": {
+          "errors": {
+            "firstName": [
+              "must not be blank",
+              "must be less than or equal to 100"
+            ],
+            "lastName": ["must be less than or equal to 100"],
+            "email": [
+              "invalid email format",
+              "must be less than or equal to 100"
+            ],
+            "phone": [
+              "invalid phone format",
+              "must be less than or equal to 100"
+            ]
+          }
+        }
+      },
+      "ContactResponseUpdateBad": {
+        "description": "Example BAD_REQUEST response with JSON",
+        "value": {
+          "errors": {
+            "firstName": ["must be less than or equal to 100"],
+            "lastName": ["must be less than or equal to 100"],
+            "email": [
+              "invalid email format",
+              "must be less than or equal to 100"
+            ],
+            "phone": [
+              "invalid phone format",
+              "must be less than or equal to 100"
+            ]
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized User",
+        "value": {
+          "errors": "Unauthorized"
+        }
+      }
+    }
+  }
+}
